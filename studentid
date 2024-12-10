@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .form-container {
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 2px solid #007BFF;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            text-align: center; /* Center align form content */
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="submit"],
+        .form-container input[type="reset"],
+        .form-container textarea,
+        .form-container input[type="file"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #007BFF;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .form-container textarea {
+            height: 60px;
+            resize: vertical;
+        }
+
+        .form-container input[type="submit"],
+        .form-container input[type="reset"] {
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container input[type="reset"] {
+            background-color: #6c757d;
+        }
+
+        .form-container input[type="submit"]:hover,
+        .form-container input[type="reset"]:hover {
+            background-color: #0056b3;
+        }
+
+        .form-container input[type="reset"]:hover {
+            background-color: #5a6268;
+        }
+
+        .id-card {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            margin-top: 20px;
+            flex-direction: column;
+        }
+
+        .card-side {
+            width: 100%; /* Ensure both sides have the same width */
+            height: 650px; /* Ensure both sides have the same height */
+            background-color: #ffffff;
+            border: 2px solid #007BFF;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            margin: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .card-side .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            width: 100%;
+            position: relative;
+        }
+
+        .card-side .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            left: 50%; /* Centered horizontally */
+            transform: translateX(-50%); /* Centering trick */
+        }
+
+        .card-side .college-info {
+            width: 100%;
+            text-align: center;
+            color: #007BFF;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 60px; /* Adjusted margin */
+        }
+
+        .card-side .student-photo {
+            width: 150px; /* Adjusted size */
+            height: 150px; /* Adjusted size */
+            border-radius: 10px; /* Rectangular shape */
+            border: 2px solid #007BFF;
+            margin-top: 20px; /* Adjusted margin */
+        }
+
+        .card-side .content {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px; /* Adjusted margin */
+        }
+
+        .card-side .student-details {
+            text-align: left; /* Align details left */
+            width: 100%;
+            padding: 0 20px; /* Added padding for better spacing */
+            margin-top: 20px; /* Adjusted margin */
+        }
+
+        .card-side .student-details p {
+            margin: 5px 0;
+        }
+
+        .card-side .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto; /* Push to top */
+            width: 100%;
+            padding: 0 5px; /* Added padding for better spacing */
+        }
+
+        .card-side .signature {
+            width: 80%;
+            border-top: 1px solid #007BFF;
+            text-align: center;
+            margin-top: 20px; /* Adjusted margin */
+            position: relative;
+        }
+
+        /* Principal Signature specific styles */
+        .card-side .signature:first-child {
+            z-index: 1; /* Higher z-index to appear above */
+        }
+
+        /* Student Signature specific styles */
+        .card-side .signature:last-child {
+            z-index: 0; /* Lower z-index to appear below */
+        }
+
+        .card-side .signature p {
+            margin-top: 5px;
+        }
+
+        .back-content {
+            width: 100%;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 20px; /* Adjusted padding */
+        }
+
+        .back-content p {
+            margin: 5px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .back-content .terms {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .back-content .terms p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <form id="idForm">
+                <label for="studentName">Student Name:</label>
+                <input type="text" id="studentName" name="studentName" required><br><br>
+                
+                <label for="usn">USN:</label>
+                <input type="text" id="usn" name="usn" required><br><br>
+                
+                <label for="branch">Branch:</label>
+                <input type="text" id="branch" name="branch" required><br><br>
+                
+                <label for="dob">Date of Birth:</label>
+                <input type="text" id="dob" name="dob" required><br><br>
+                
+                <label for="bloodGroup">Blood Group:</label>
+                <input type="text" id="bloodGroup" name="bloodGroup" required><br><br>
+
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" required><br><br>
+                
+                <label for="address">Permanent Address:</label>
+                <textarea id="address" name="address" required></textarea><br><br>
+                
+                <label for="validUpto">Valid Upto:</label>
+                <input type="text" id="validUpto" name="validUpto" required><br><br>
+                
+                <label for="fatherName">Father's Name:</label>
+                <input type="text" id="fatherName" name="fatherName" required><br><br>
+                
+                <label for="studentPhoto">Upload Student Photo (Max 2MB):</label>
+                <input type="file" id="studentPhoto" name="studentPhoto" accept="image/*" required><br>
+                <p class="note">Note: Photo should be less than 2MB.</p>
+
+                <label for="studentSignature">Upload Student Signature (Max 500KB):</label>
+                <input type="file" id="studentSignature" name="studentSignature" accept="image/*" required><br>
+                <p class="note">Note: Signature should be less than 500KB.</p>
+
+                <label for="principalSignature">Upload Principal Signature (Max 500KB):</label>
+                <input type="file" id="principalSignature" name="principalSignature" accept="image/*" required><br>
+                <p class="note">Note: Signature should be less than 500KB.</p>
+
+                <input type="submit" value="Generate ID Card">
+                <input type="reset" value="Reset">
+            </form>
+        </div>
+        <div class="id-card">
+            <div class="card-side front">
+                <div class="header">
+                    <img src="" alt="College Logo" class="logo">
+                    <div class="college-info">
+                        <h2 id="collegeName">College Name</h2>
+                        <p id="collegeAddress">College Address</p>
+                    </div>
+                </div>
+                <img src="" alt="Student Photo" class="student-photo">
+                <div class="content">
+                    <h3 id="studentNameDisplay">Student Name</h3>
+                    <div class="student-details">
+                        <p id="usnDisplay">USN: </p>
+                        <p id="branchDisplay">Branch: </p>
+                        <p id="dobDisplay">DOB: </p>
+                        <p id="bloodGroupDisplay">Blood Group: </p>
+                        <p id="validUptoDisplay">Valid Upto: </p>
+                    </div>
+                    <div class="signatures">
+                        <div class="signature">
+                            <img src="" alt="Principal Signature" class="signature-image" id="principalSignatureDisplay">
+                            <p>Principal Signature</p>
+                        </div>
+                        <div class="signature">
+                            <img src="" alt="Student Signature" class="signature-image" id="studentSignatureDisplay">
+                            <p>Student Signature</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-side back">
+                <div class="back-content">
+                    <h3>Contact Details</h3>
+                    <p id="addressDisplay">Address:</p>
+                    <p id="phoneNumberDisplay">Phone:</p>
+                    <h3>Father's Name</h3>
+                    <p id="fatherNameDisplay">Father's Name:</p>
+                    <div class="terms">
+                        <h3>Terms and Conditions</h3>
+                        <p>1. This card is the property of the issuing college and must be returned upon request.</p>
+                        <p>2. The cardholder must abide by the rules and regulations of the college.</p>
+                        <p>3. In case of loss, a duplicate card will be issued on payment of the prescribed fee.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('idForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const studentName = document.getElementById('studentName').value;
+            const usn = document.getElementById('usn').value;
+            const branch = document.getElementById('branch').value;
+            const dob = document.getElementById('dob').value;
+            const bloodGroup = document.getElementById('bloodGroup').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const address = document.getElementById('address').value;
+            const validUpto = document.getElementById('validUpto').value;
+            const fatherName = document.getElementById('fatherName').value;
+            const studentPhoto = document.getElementById('studentPhoto').files[0];
+            const studentSignature = document.getElementById('studentSignature').files[0];
+            const principalSignature = document.getElementById('principalSignature').files[0];
+            
+            // Validate image sizes
+            const maxPhotoSize = 2 * 1024 * 1024; // 2MB
+            const maxSignatureSize = 500 * 1024; // 500KB
+
+            if (studentPhoto.size > maxPhotoSize) {
+                alert("Student photo should be less than 2MB.");
+                return;
+            }
+
+            if (studentSignature.size > maxSignatureSize) {
+                alert("Student signature should be less than 500KB.");
+                return;
+            }
+
+            if (principalSignature.size > maxSignatureSize) {
+                alert("Principal signature should be less than 500KB.");
+                return;
+            }
+
+            // Display ID card details
+            document.getElementById('studentNameDisplay').textContent = studentName;
+            document.getElementById('usnDisplay').textContent = "USN: " + usn;
+            document.getElementById('branchDisplay').textContent = "Branch: " + branch;
+            document.getElementById('dobDisplay').textContent = "DOB: " + dob;
+            document.getElementById('bloodGroupDisplay').textContent = "Blood Group: " + bloodGroup;
+            document.getElementById('phoneNumberDisplay').textContent = "Phone: " + phoneNumber;
+            document.getElementById('addressDisplay').textContent = "Address: " + address;
+            document.getElementById('validUptoDisplay').textContent = "Valid Upto: " + validUpto;
+            document.getElementById('fatherNameDisplay').textContent = "Father's Name: " + fatherName;
+            
+            // Display images
+            const studentPhotoURL = URL.createObjectURL(studentPhoto);
+            const studentSignatureURL = URL.createObjectURL(studentSignature);
+            const principalSignatureURL = URL.createObjectURL(principalSignature);
+            
+            document.querySelector('.student-photo').src = studentPhotoURL;
+            document.getElementById('studentSignatureDisplay').src = studentSignatureURL;
+            document.getElementById('principalSignatureDisplay').src = principalSignatureURL;
+            
+            document.querySelector('.id-card').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
